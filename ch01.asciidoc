@@ -6,11 +6,11 @@
 One of the most difficult things about learning how to program Bitcoin is knowing where to start.
 There are so many components that depend on each other that learning one thing may lead you to have to learn another, which in turn may lead you to learn something else before you can understand the original thing.
 
-This chapter is going to get you off to a more manageable start.
+This((("Bitcoin", "overview of components")))((("Elliptic Curve Cryptography", "role in Bicoin")))((("signing and verification", "purpose of")))((("Transactions", "role in Bitcoin"))) chapter is going to get you off to a more manageable start.
 It may seem strange, but we'll start with the basic math that you need to understand Elliptic Curve Cryptography.
 Elliptic Curve Cryptography, in turn, gives us the signing and verification algorithms.
 These are at the heart of how Transactions work, and Transactions are the atomic unit of value transfer in Bitcoin.
-By learning Finite Fields and Elliptic Curves first, you'll get a firm grasp of concepts that you'll need to progress logically.
+By learning Finite Fields((("Finite Fields", "role in Bitcoin")))((("Elliptic Curves", "role in Bitcoin"))) and Elliptic Curves first, you'll get a firm grasp of concepts that you'll need to progress logically.
 
 Be aware that this chapter and the next two chapters may feel a bit like you're eating vegetables, especially if you haven't done formal math in a long time.
 I would encourage you to get through this, as the concepts and code here will be used throughout the book.
@@ -30,7 +30,7 @@ The fundamentals here will not only make understanding Bitcoin a lot easier, but
 
 === Finite Field Definition
 
-Mathematically, a Finite Field is defined as follows:
+Mathematically,((("mathematical tools", "Finite Fields", id="MTfinite01")))((("Finite Fields", "definition of"))) a Finite Field is defined as follows:
 
 A finite set of numbers and two operations *+* (addition) and *⋅* (multiplication) that satisfy the following:
 
@@ -39,11 +39,11 @@ We call this property _closed_.
 2. The additive identity: _0_ exists and has the property __a + 0 = a__.
 3. The multiplicative identity: _1_ exists and has the property __a ⋅ 1 = a__.
 4. If _a_ is in the set, __–a__ is in the set, which is defined as the value that makes __a + (-a) = 0__.
-This is what we call the _additive inverse_.
+This((("additive inverse"))) is what we call the _additive inverse_.
 5. If _a_ is in the set and is not 0, __a^–1^__ is in the set, which is defined as the value that makes __a ⋅ a^–1^ = 1__.
-This is what we call the _multiplicative inverse_.
+This((("multiplicative inverse"))) is what we call the _multiplicative inverse_.
 
-Let's unpack each of the above.
+Let's unpack each of these criteria.
 
 We have a set of numbers that's finite.
 Because the set is finite, we can designate a number _p_, which is how big the set is.
@@ -74,8 +74,8 @@ This will be the trickiest to define in a finite field.
 
 === Defining Finite Sets
 
-If the _order_ (or size) of the set is _p_, we can call the elements of the set, 0, 1, 2, ... p – 1.
-These numbers are what we call the _elements_ of the set, not necessarily the traditional numbers 0, 1, 2, 3, etc.
+If((("Finite Fields", "defining finite sets", id="FFsets01")))((("order (size)"))) the _order_ (or size) of the set is _p_, we can call the elements of the set, 0, 1, 2, ... p – 1.
+These((("elements"))) numbers are what we call the _elements_ of the set, not necessarily the traditional numbers 0, 1, 2, 3, etc.
 They behave in many ways like traditional numbers, but have some differences in how we add, subtract, multiply, and so forth.
 
 In math notation the Finite Field set looks like this:
@@ -86,7 +86,7 @@ In math notation the Finite Field set looks like this:
 </ul>
 ++++
 
-What's in the Finite Field set are called elements.
+What's in the Finite Field set are called elements.((("field of p")))
 F~p~ is a specific finite field called "field of p" or "field of 29" or whatever the size of it is (again, the size is what mathematicians call _order_).
 The numbers between the {}s represent what elements are in the field.
 We name the elements 0, 1, 2, etc. because they're convenient for our purposes.
@@ -122,7 +122,7 @@ For a variety of reasons that will become clear later, it turns out that fields 
 
 ==== Constructing a Finite Field in Python
 
-We want to represent each Finite Field element, so in Python, we'll be creating a class that represents a single Finite Field element.
+We((("FieldElement class"))) want to represent each Finite Field element, so in Python, we'll be creating a class that represents a single Finite Field element.
 Naturally, we'll name the class `FieldElement`.
 
 
@@ -135,8 +135,8 @@ include::code-ch01/ecc.py[tag=source1]
 ----
 <1> We first check that `num` is between `0` and `prime-1` inclusive.
 If not, we get an invalid Field Element and we raise a `ValueError`, which is what we should raise when we get an inappropriate value.
-<2> The rest of the `__init__` method assigns the initialization values to the object.
-<3> The `__eq__` method checks if two objects of class `FieldElement` are equal.
+<2> The((("&#x005F;&#x005F;init&#x005F;&#x005F; method"))) rest of the `__init__` method assigns the initialization values to the object.
+<3> The((("&#x005F;&#x005F;eq&#x005F;&#x005F; method"))) `__eq__` method checks if two objects of class `FieldElement` are equal.
 This is only true when the `num` and `prime` properties are equal.
 
 What we've defined already allows us to do this:
@@ -146,18 +146,18 @@ What we've defined already allows us to do this:
 include::code-ch01/examples.py[tag=example1]
 ----
 
-Python allows us to override the `==` operator on `FieldElement` with the `__eq__` method, which is something we'll be taking advantage of going forward.
+Python((("== operator"))) allows us to override the `==` operator on `FieldElement` with the `__eq__` method, which is something we'll be taking advantage of going forward.
 
 You can see this in action in the code that accompanies this book.
 Once you've set up Jupyter Notebook (see Preface), you can navigate to _code-ch01/Chapter1.ipynb_ and run the code to see the results.
 For the next exercise, you'll want to open up _ecc.py_ by clicking the link in the Exercise 1 box.
-If you get stuck, please remember that the answers to every exercise are in <<appendix_solutions>>.
+If you get stuck, please remember that the answers to every exercise are in <<appendix_solutions>>.((("", startref="FFsets01")))((("&#x005F;&#x005F;ne&#x005F;&#x005F; method")))
 
 include::code-ch01/answers.py[tag=exercise1,indent=0]
 
 === Modulo Arithmetic
 
-One of the tools we can use to make a Finite Field closed under addition, subtraction, multiplication, and division is something called _modulo arithmetic_.
+One((("Finite Fields", "modulo arithmetic", id="FFmodulo01")))((("modulo arithmetic", id="modulo01"))) of the tools we can use to make a Finite Field closed under addition, subtraction, multiplication, and division is something called _modulo arithmetic_.
 
 We can define addition on the finite set using modulo arithmetic, which is something you probably learned when you first learned division.
 Remember problems like <<long_division_example_one>>?
@@ -168,7 +168,7 @@ image::images/prbc_0101.png[Long Division Example 1]
 
 Whenever the division wasn't even, there was something called the "remainder," which is the leftover from the actual division.
 We define modulo in the same way.
-We use the operator % for "modulo":
+We((("% (modulo) operator"))) use the operator % for "modulo":
 
 ++++
 <ul class="simplelist">
@@ -268,7 +268,7 @@ Here is how the modulo operator is used:
 include::code-ch01/examples.py[tag=example2]
 ----
 
-We can also use the modulo operator on negative numbers like this:
+We can also use the modulo operator on negative numbers like((("", startref="FFmodulo01")))((("", startref="modulo01"))) this:
 
 [source,python]
 ----
@@ -277,7 +277,7 @@ include::code-ch01/examples.py[tag=example3]
 
 === Finite Field Addition and Subtraction
 
-Remember that we need to define Finite Field addition such that we ensure the result is still in the set.
+Remember((("Finite Fields", "addition and subtraction", id="FFadd01"))) that we need to define Finite Field addition such that we ensure the result is still in the set.
 That is, we want to make sure that addition in a Finite Field is _closed_.
 
 We can use what we just learned, modulo arithmetic, to make addition closed.
@@ -289,7 +289,7 @@ Let's say we have a Finite Field of 19:
 </ul>
 ++++
 
-where a, b ∈ __F__~19~. Note that the symbol ∈ means "is an element of."
+where a, b ∈ __F__~19~. Note((("element of (&#x2208;) symbol")))((("&#x2208; (element of) symbol"))) that the symbol ∈ means "is an element of."
 In our case, _a_ and _b_ are elements of __F__~19~.
 
 Addition being closed means:
@@ -399,7 +399,7 @@ include::code-ch01/answers.py[tag=exercise2,indent=0]
 
 ==== Coding Addition and Subtraction in Python
 
-In the class `FieldElement` we can now define `__add__` and `__sub__` methods.
+In((("&#x005F;&#x005F;add&#x005F;&#x005F; method")))((("&#x005F;&#x005F;sub&#x005F;&#x005F; method"))) the class `FieldElement` we can now define `__add__` and `__sub__` methods.
 The idea of these methods is that we want something like this to work:
 
 [source,python]
@@ -407,7 +407,7 @@ The idea of these methods is that we want something like this to work:
 include::code-ch01/examples.py[tag=example4]
 ----
 
-In Python we can define what addition (or + operator) means for our class with the `__add__` method.
+In((("&#x002B; (addition) operator")))((("addition (&#x002B;) operator"))) Python we can define what addition (or + operator) means for our class with the `__add__` method.
 So how do we do this?
 We combine what we learned with modulo arithmetic and create a new method of the class `FieldElement` like so:
 
@@ -417,17 +417,17 @@ include::code-ch01/ecc.py[tag=source2]
 ----
 <1> We have to ensure that the elements are from the same Finite Field, otherwise this calculation doesn't have any meaning.
 <2> Addition in a Finite Field is defined with the modulo operator, as explained earlier.
-<3> We have to return an instance of the class, which we can conveniently access with `self.__class__`.
+<3> We((("self.&#x005F;&#x005F;class&#x005F;&#x005F; method"))) have to return an instance of the class, which we can conveniently access with `self.__class__`.
 We pass the two initializing arguments, `num` and `self.prime`, for the `__init__` method above.
 
 Note that we can use `FieldElement` instead of `self.__class__`, but this would not make the method easily inheritable.
-We will be subclassing `FieldElement` later, so making the method inheritable is important here.
+We will be subclassing `FieldElement` later, so making the method inheritable is important here.((("", startref="FFadd01")))
 
 include::code-ch01/answers.py[tag=exercise3,indent=0]
 
 === Finite Field Multiplication and Exponentiation
 
-Just as we defined a new addition (+~f~) for Finite Fields that was _closed_, we can also define a new multiplication for Finite Fields that's also closed.
+Just((("Finite Fields", "multiplication and exponentiation", id="FFmulti1"))) as we defined a new addition (+~f~) for Finite Fields that was _closed_, we can also define a new multiplication for Finite Fields that's also closed.
 By multiplying the same number many times, we can also define exponentiation.
 In this section, we'll go through exactly how to define this using modulo arithmetic.
 
@@ -491,7 +491,7 @@ If the order of the set was composite number, multiplying the set by one of the 
 
 ==== Coding Multiplication in Python
 
-Now that we understand what multiplication should be in `FieldElement`, we want to define the `__mul__` method that overrides the `*` operator.
+Now((("&#x005F;&#x005F;mul&#x005F;&#x005F; method")))((("&#x002A; (multiplication) operator")))((("multiplication (&#x002A;) operator"))) that we understand what multiplication should be in `FieldElement`, we want to define the `__mul__` method that overrides the `*` operator.
 We want this to work:
 
 [source,python]
@@ -505,7 +505,7 @@ include::code-ch01/answers.py[tag=exercise6,indent=0]
 
 ==== Coding Exponentiation in Python
 
-We need to define the exponentiation for `FieldElement`, which in Python can be defined with the `__pow__` method, overriding the `**` operator.
+We((("&#x005F;&#x005F;pow&#x005F;&#x005F; method")))((("&#x002A;&#x002A; operator"))) method need to define the exponentiation for `FieldElement`, which in Python can be defined with the `__pow__` method, overriding the `**` operator.
 The difference here is that the exponent is _not_ a `FieldElement`, so it has to be treated a bit differently.
 We want something like this to work:
 
@@ -532,13 +532,13 @@ Why don't we force the exponent to be a `FieldElement` object?
 It turns out that the exponent doesn't have to be a member of the Finite Field for the math to work.
 In fact, if it were, the exponents wouldn't display the intuitive behavior we would expect from exponents, like being able to add the exponents when you multiply with the same base.
 
-Some of what we're doing now may seem slow for large numbers, but we'll use some clever tricks to improve the performance of these algorithms.
+Some of what we're doing now may seem slow for large numbers, but we'll use some clever tricks to improve the performance of these algorithms.((("", startref="FFmulti1")))
 
 include::code-ch01/answers.py[tag=exercise7,indent=0]
 
 === Finite Field Division
 
-The intuition that helps us with addition, subtraction, multiplication, and perhaps even exponentiation unfortunately doesn't help us quite as much in division.
+The((("Finite Fields", "division", id="FFdiv01"))) intuition that helps us with addition, subtraction, multiplication, and perhaps even exponentiation unfortunately doesn't help us quite as much in division.
 Because division is the hardest one to make sense of, we'll start with something that should make sense.
 
 In normal math, division is the inverse of multiplication:
@@ -564,7 +564,7 @@ The question you might be asking yourself is, how do I calculate 2/~__f__~7 if I
 This is indeed a very good question; to answer it, we'll have to use the result from Exercise 7.
 
 In case you didn't get it, the answer is that __n__^(__p__–1)^ is always 1 for every _p_ that is prime and every _n_ > 0.
-This is a beautiful result from number theory called Fermat's Little Theorem.
+This is a beautiful result from number theory called((("Fermat’s Little Theorem"))) Fermat's Little Theorem.
 Essentially, the theorem says:
 
 ++++
@@ -677,11 +677,11 @@ In __F__~19~:
 
 This is a relatively expensive calculation as exponentiating grows very fast.
 Division is the most expensive operation for that reason.
-To lessen the expensiveness, we can use the `pow` function in Python, which does exponentiation.
+To((("pow function"))) lessen the expensiveness, we can use the `pow` function in Python, which does exponentiation.
 Thus something like `pow(7,17)` does the same thing as `7**17`.
 The `pow` function, however, has an optional third argument that makes our calculation more efficient.
 Specifically, `pow` will modulo by the third argument.
-Thus, `pow(7,17,19)` will give the same result as `7**17%19` but do so faster because the modulo function is done after each round of multiplication.
+Thus, `pow(7,17,19)` will give the same result as `7**17%19` but do so faster because the modulo function is done after each round of multiplication.((("&#x005F;&#x005F;truediv&#x005F;&#x005F; method")))((("&#x005F;&#x005F;floordiv&#x005F;&#x005F; method")))((("", startref="FFdiv01")))
 
 include::code-ch01/answers.py[tag=exercise8,indent=0]
 
@@ -689,7 +689,7 @@ include::code-ch01/answers.py[tag=exercise9,indent=0]
 
 === Redefining Exponentiation
 
-One last thing that we need to take care of before we leave this chapter is the `__pow__` method, which needs to handle negative exponents.
+One((("&#x005F;&#x005F;pow&#x005F;&#x005F; method")))((("Finite Fields", "redefining exponentiation"))) last thing that we need to take care of before we leave this chapter is the `__pow__` method, which needs to handle negative exponents.
 For example, __a__^–3^ needs to be a Finite Field element, but the current code does not take care of this case.
 We want, for example, something like this to work:
 
@@ -747,10 +747,10 @@ class FieldElement:
 ...
 include::code-ch01/ecc.py[tag=source3]
 ----
-<1> Make the exponent into something within the 0 to p-2 range, inclusive.
+<1> Make the exponent into something within the 0 to __p__–2 range, inclusive.
 
 === Conclusion
 
 In this chapter we learned about Finite Fields and how to implement it in Python.
 We'll be using Finite Fields in <<chapter_elliptic_curve_cryptography>> for Elliptic Curve Cryptography.
-We turn next to the other mathematical component that we need for Elliptic Curve Cryptography: Elliptic Curves.
+We turn next to the other mathematical component that we need for Elliptic Curve Cryptography: Elliptic Curves.((("", startref="MTfinite01")))

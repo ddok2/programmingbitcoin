@@ -12,7 +12,7 @@ The full node can check for transactions that are relevant to these addresses, b
 A light client wouldn't want to reveal, for example, that it has one thousand BTC to a full node.
 Privacy leaks are security leaks, and in Bitcoin, it's generally a good idea to not leak any privacy whenever possible.
 
-One solution is for the light client to tell the full node enough information to create a _superset_ of all transactions of interest.
+One((("Bloom Filters", "purpose of", id="BFpurpose12"))) solution is for the light client to tell the full node enough information to create a _superset_ of all transactions of interest.
 To create this superset, we use what's called a _Bloom Filter_.
 
 === What Is a Bloom Filter?
@@ -71,13 +71,13 @@ include::code-ch12/examples.py[tag=example2]
 ----
 <1> We are creating a filter for two items here, but this can be extended to many more.
 
-If the space of all possible items is 50, 10 items on average will make it through this filter instead of the 5 when we only had 1 item of interest, because 2 buckets are returned, not 1.
+If the space of all possible items is 50, 10 items on average will make it through this filter instead of the 5 when we only had 1 item of interest, because 2 buckets are returned, not 1.((("", startref="BFpurpose12")))
 
 include::code-ch12/answers.py[tag=exercise1,indent=0]
 
 === Going a Step Further
 
-Supposing that the space of all items is 1 million and we want bucket sizes to still be 5, we would need a Bloom Filter that's 1,000,000 / 5 = 200,000 bits long.
+Supposing((("Bloom Filters", "using multiple hash functions"))) that the space of all items is 1 million and we want bucket sizes to still be 5, we would need a Bloom Filter that's 1,000,000 / 5 = 200,000 bits long.
 Each bucket would have on average 5 items and we would get 5 times the number of items we're interested in, 20% of which would be items of interest.
 200,000 bits is 25,000 bytes and is a lot to transmit.
 Can we do better?
@@ -106,7 +106,7 @@ A Bloom Filter can be optimized by changing the number of hash functions and bit
 
 === BIP0037 Bloom Filters
 
-BIP0037 specifies Bloom Filters in network communication. The information contained in a Bloom Filter is:
+BIP0037((("Bloom Filters", "BIP0037 Bloom Filters")))((("BIP (Bitcoin Improvement Proposals)", "BIP0037"))) specifies Bloom Filters in network communication. The information contained in a Bloom Filter is:
 
 1. The size of the bit field, or how many buckets there are.
 The size is specified in bytes (8 bits per byte) and rounded up if necessary.
@@ -117,7 +117,7 @@ The size is specified in bytes (8 bits per byte) and rounded up if necessary.
 While we could define lots of hash functions (sha512, keccak384, ripemd160, blake256, etc.), in practice, we use a single hash function with a different seed.
 This allows the implementation to be simpler.
 
-The hash function we use is called `murmur3`.
+The((("hashes", "murmur3 hash function")))((("murmur3 hash function"))) hash function we use is called `murmur3`.
 Unlike sha256, _murmur3_ is not cryptographically secure, but is much faster.
 The task of filtering and getting a deterministic, evenly distributed modulo does not require cryptographic security, but benefits from speed, so murmur3 is the appropriate tool for the job.
 The seed formula is defined this way:
@@ -156,7 +156,7 @@ include::code-ch12/answers.py[tag=exercise3,indent=0]
 
 === Loading a Bloom Filter
 
-Once a light client has created a Bloom Filter, it needs to let the full node know the details of the filter so the full node can send Proofs of Inclusion.
+Once((("Bloom Filters", "loading"))) a light client has created a Bloom Filter, it needs to let the full node know the details of the filter so the full node can send Proofs of Inclusion.
 The first thing a light client must do is set the optional relay flag in the version message (see <<chapter_networking>>) to 0.
 This tells the full node not to send transaction messages unless they match a Bloom Filter or they have been specifically requested.
 After the relay flag, a light client then communicates to the full node the Bloom Filter itself.
@@ -174,7 +174,7 @@ include::code-ch12/answers.py[tag=exercise4,indent=0]
 
 === Getting Merkle Blocks
 
-There is one more command that a light client needs: Merkle Block information about transactions of interest from the full node.
+There((("Bloom Filters", "getting Merkle Blocks")))((("Merkle Blocks", "filtered")))((("filtered blocks"))) is one more command that a light client needs: Merkle Block information about transactions of interest from the full node.
 The `getdata` command is what communicates blocks and transactions.
 The specific type of data that a light client will want from a full node is something called a _filtered block_.
 A filtered block is asking for transactions that pass through the Bloom Filter in the form of Merkle Blocks.
@@ -203,7 +203,7 @@ include::code-ch12/answers.py[tag=exercise5,indent=0]
 
 === Getting Transactions of Interest
 
-A light client that loads a Bloom Filter with a full node will get all the information needed to prove that transactions of interest are included in particular blocks.
+A((("Bloom Filters", "getting transactions of interest")))((("transactions of interest, collecting"))) light client that loads a Bloom Filter with a full node will get all the information needed to prove that transactions of interest are included in particular blocks.
 
 [source,python]
 ----

@@ -1,7 +1,7 @@
 [preface]
 == Preface
 
-This book will teach you the technology of Bitcoin at a fundamental level.
+This((("Bitcoin", "approach to learning"))) book will teach you the technology of Bitcoin at a fundamental level.
 It doesn't cover the monetary, economic, or social dynamics of Bitcoin, but knowing how Bitcoin works under the hood should give you greater insight into what's possible.
 There's a tendency to hype Bitcoin and blockchain without really understanding what's going on; this book is meant to be an antidote to that tendency.
 
@@ -12,7 +12,7 @@ The aim of the library is to help you learn.
 
 === Who Is This Book for?
 
-This book is for programmers who want to learn how Bitcoin works by coding it themselves.
+This((("Bitcoin", "target audience"))) book is for programmers who want to learn how Bitcoin works by coding it themselves.
 You will learn Bitcoin by coding the "bare metal" stuff in a Bitcoin library you will create from scratch.
 This is not a reference book where you can look up the specification for a particular feature.
 
@@ -24,7 +24,7 @@ It covers everything needed to accomplish this, including the math, parsing, net
 
 === What Do I Need to Know?
 
-The prerequisites for this book are that you know programming, Python in particular.
+The((("Bitcoin", "prerequisites to learning"))) prerequisites for this book are that you know programming, Python in particular.
 The library itself is written in Python 3, and a lot of the exercises can be done in a controlled environment like a Jupyter notebook.
 An intermediate knowledge of Python is preferable, but even a beginning knowledge of Python is probably sufficient to get a lot of the concepts.
 
@@ -36,7 +36,7 @@ General computer science knowledge like hash functions will come in handy, but a
 
 === How Is the Book Arranged?
 
-This book is split into 14 chapters. Each is meant to build on the previous one as the Bitcoin library gets built from scratch all the way to the end.
+This((("Bitcoin", "topics covered"))) book is split into 14 chapters. Each is meant to build on the previous one as the Bitcoin library gets built from scratch all the way to the end.
 
 Roughly speaking, Chapters pass:[<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_finite_fields">#chapter_finite_fields</a>–<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_serialization">#chapter_serialization</a>] establish the mathematical tools that we need; Chapters pass:[<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_tx_parsing">#chapter_tx_parsing</a>–<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_p2sh">#chapter_p2sh</a>] cover Transactions, which are the fundamental unit of Bitcoin; and Chapters pass:[<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_blocks">#chapter_blocks</a>–<a data-type="xref" data-xrefstyle="select:labelnumber" href="#chapter_bloom_filters">#chapter_bloom_filters</a>] cover Blocks and Networking.
 The last two chapters cover some advanced topics but don't actually require you to write code.
@@ -70,7 +70,7 @@ To aid your progress, we will be looking at a lot of code and diagrams throughou
 
 === Setting Up
 
-To get the most out of this book, you'll want to create an environment where you can run the example code and do the exercises.
+To((("Bitcoin", "downloading and installation", id="Bdown00")))((("example code", "environment setup", id="ECset00")))((("environment setup", id="envset00")))((("exercises", "environment setup", id="Eset00"))) get the most out of this book, you'll want to create an environment where you can run the example code and do the exercises.
 Here are the commands for setting everything up.
 
 Install Python 3.5 or higher on your machine:
@@ -130,7 +130,7 @@ C:\programmingbitcoin> .venv\Scripts\activate.bat
 C:\programmingbitcoin> pip install -r requirements.txt
 ----
 
-Run Jupyter Notebook:
+Run Jupyter((("Jupyter Notebook", "running"))) Notebook:
 
 [source,bash]
 ----
@@ -155,7 +155,7 @@ You should have a browser open up automatically, as shown in <<pr0001>>.
 .Jupyter
 image::images/prbc_0001.png[Jupyter]
 
-Here's how to navigate to chapter directories. To do the exercises from <<chapter_finite_fields>>, you would navigate to _code-ch01_ (<<pr0002>>):
+Here's((("Jupyter Notebook", "navigating chapter directories"))) how to navigate to chapter directories. To do the exercises from <<chapter_finite_fields>>, you would navigate to _code-ch01_ (<<pr0002>>):
 
 [[pr0002]]
 .Jupyter directory view
@@ -171,7 +171,7 @@ You may want to familiarize yourself with this interface if you haven't seen it 
 You can run each "cell" and see the results as if this were an interactive Python shell.
 
 A large portion of the exercises will be coding concepts introduced in the book.
-The unit tests are written for you, and you will need to write the Python code to make the tests pass.
+The((("exercises", "unit tests")))((("unit tests"))) unit tests are written for you, and you will need to write the Python code to make the tests pass.
 You can check whether your code is correct directly in Jupyter.
 You will need to edit the corresponding file by clicking through a link like the "this test" link in <<pr0003>>.
 This will take you to a browser tab, as shown in <<pr0003>>.
@@ -180,16 +180,16 @@ This will take you to a browser tab, as shown in <<pr0003>>.
 .ecc.py
 image::images/prbc_0004.png[Chapter 1 ecc.py]
 
-To make the test pass, edit the file here and save.
+To make the test pass, edit the file here and save.((("", startref="Bdown00")))((("", startref="ECset00")))((("", startref="envset00")))((("", startref="Eset00")))
 
 === Answers
 
-All the answers to the various exercises in this book are in <<appendix_solutions>>.
+All((("exercises", "answers to"))) the answers to the various exercises in this book are in <<appendix_solutions>>.
 They are also available in the __code-ch<xx>/answers.py__ file where +xx+ is the chapter that you're on.
 
 === Conventions Used in This Book
 
-The following typographical conventions are used in this book:
+The((("typographical conventions"))) following typographical conventions are used in this book:
 
 _Italic_:: Indicates new terms, URLs, email addresses, filenames, and file extensions.
 
@@ -223,7 +223,7 @@ If there is, when you email digidist with the link, let them know what you fille
 This info will determine where digidist loads the files.-->
 ++++
 
-Supplemental material (code examples, exercises, etc.) is available for download at link:$$https://github.com/jimmysong/programmingbitcoin$$[].
+Supplemental((("example code", "downloading and using")))((("code examples, obtaining and using"))) material (code examples, exercises, etc.) is available for download at link:$$https://github.com/jimmysong/programmingbitcoin$$[].
 
 This book is here to help you get your job done.
 In general, if example code is offered with this book, you may use it in your programs and documentation.
@@ -233,7 +233,7 @@ Selling or distributing a CD-ROM of examples from O’Reilly books does require 
 Answering a question by citing this book and quoting example code does not require permission.
 Incorporating a significant amount of example code from this book into your product’s documentation does require permission.
 
-We appreciate, but do not require, attribution.
+We((("attributions"))) appreciate, but do not require, attribution.
 An attribution usually includes the title, author, publisher, and ISBN.
 For example: “_Programming Bitcoin_ by Jimmy Song (O’Reilly).
 Copyright 2019, 978-1-492-03149-9.”
@@ -252,7 +252,7 @@ Our unique network of experts and innovators share their knowledge and expertise
 
 === How to Contact Us
 
-Please address comments and questions concerning this book to the publisher:
+Please((("contact information")))((("questions and comments")))((("comments and questions"))) address comments and questions concerning this book to the publisher:
 
 ++++
 <ul class="simplelist">
@@ -280,45 +280,45 @@ Watch us on YouTube: link:$$http://www.youtube.com/oreillymedia$$[]
 
 === Acknowledgments
 
-The number of people that got me here is legion. The experiences and knowledge that an author draws from tend to have a lot of origins and it's difficult to give them all their proper credit. This is my way of saying that I'm probably going to forget a significant number of people and for that I sincerely apologize.
+The((("acknowledgments", id="ack00"))) number of people that got me here is legion. The experiences and knowledge that an author draws from tend to have a lot of origins and it's difficult to give them all their proper credit. This is my way of saying that I'm probably going to forget a significant number of people and for that I sincerely apologize.
 
 First, I want to thank my Lord Jesus Christ for putting me on this journey. If not for my faith, I would not have had the ethical conviction to blog about the importance of sound money in general and Bitcoin in particular, which ultimately led to the writing of this book.
 
 My parents, Kathy and Kyung-Sup, had the courage to immigrate to America back when I was 8 years old, which ultimately led to the opportunities I've had. My dad got me my first computers (Commodore 16, Generic Hyundai 8086 and a 486 33-Mhz from a manufacturer I don't remember) and my mom got me private programming tutoring as a 6th and 7th grader from a woman whose name I can't remember. How she found her when I showed some proclivity to programming, I don't know. That teacher-whose-name-I-can't-remember stoked that natural tendency and I hope this acknowledgement finds its way to her.
 
-Speaking of which, I've had many teachers along the way, some of whom I hated at the time. Mr. Marain, Mrs. Edelman and Mrs. Nelson taught me math and computer science back in high school. I'm not necessarily a fan of the current education system, but what I learned in those classes were instrumental to my love of math and programming.
+Speaking of which, I've had many teachers along the way, some of whom I hated at the time. Mr. Marain, Mrs. Edelman, and Mrs. Nelson taught me math and computer science back in high school. I'm not necessarily a fan of the current education system, but what I learned in those classes were instrumental to my love of math and programming.
 
 My high school classmate Eric Silberstein gave me my first job out of college as a programmer at Idiom Technologies. I was slated to go down the consulting path before a fateful phone call back in 1998 which led me down the programmer/startup path. In a sense, I've never left.
 
-At that first job, I met Ken Liu and I'm amazed that we're where we are in our careers writing books. He not only gave me great advice about book publishing, but he wrote the wonderful forward. He's also a great sounding board, an amazing friend and I'm privileged to know him.
+At that first job, I met Ken Liu and I'm amazed that we're where we are in our careers writing books. He not only gave me great advice about book publishing, but he wrote the wonderful foreword. He's also a great sounding board and an amazing friend, and I'm privileged to know him.
 
-With regard to Bitcoin, the anonymous developer Satoshi Nakamoto invented what I thought before was impossible: decentralized digital scarcity. Bitcoin is a profound invention that the world hasn't fully grokked. The website http://slashdot.org introduced me to Bitcoin in 2011 and Alex Mizrahi gave me my first work as a Bitcoin developer in 2013 to do some open source work. I had no idea what I was doing, but I learned quite a bit about what Bitcoin was about through his direction.
+With regard to Bitcoin, the anonymous developer((("Bitcoin", "developer of"))) Satoshi Nakamoto invented what I thought before was impossible: decentralized digital scarcity. Bitcoin is a profound invention that the world hasn't fully grokked. The website http://slashdot.org introduced me to Bitcoin in 2011 and Alex Mizrahi gave me my first work as a Bitcoin developer in 2013 to do some open source work. I had no idea what I was doing, but I learned quite a bit about what Bitcoin was about through his direction.
 
-The Austin Bitcoin Meetup in 2013 was where I met a lot of Bitcoiners and the subsequent Texas Bitcoin Conference in 2014 was where I met a ton of people that I still know today. Though the meetup and conferences are not ones I attend anymore, I am grateful for the people I met. Among people I met there are Michael Goldstein, Daniel Krawisz and Napoleon Cole.
+The Austin Bitcoin Meetup in 2013 was where I met a lot of Bitcoiners and the subsequent Texas Bitcoin Conference in 2014 was where I met a ton of people that I still know today. Though the meetup and conferences are not ones I attend anymore, I am grateful for the people I met. Among people I met there are Michael Goldstein, Daniel Krawisz, and Napoleon Cole.
 
 Alan Reiner recruited me to Armory back in 2014 and I'm grateful I had the opportunity to contribute to such a significant project.
 
 Paxos/itBit was where I worked next. Chad Cascarilla and Raj Nair were the CEO and VP of Engineering who stretched me while I was there. Raj, in particular, made me write some blog posts for Paxos which I was surprised to find I enjoyed. This led to blog posts on my own site, which eventually led to my seminars, which finally led to this book.
 
-Three colleagues I met at Paxos were particularly significant. Richard Kiss, creator of pycoin, was one of my colleague there. He was the impetus for my writing a book as he proposed that we write one together. Somewhere along the way, that turned into me just writing a book, but I'm grateful for him giving me the idea.
+Three colleagues I met at Paxos were particularly significant. Richard Kiss, creator of pycoin, was one of my colleagues there. He was the impetus for my writing a book as he proposed that we write one together. Somewhere along the way, that turned into me just writing a book, but I'm grateful for him giving me the idea.
 
 Aaron Caswell was another collegue from Paxos. Aaron is a great dev that has helped me out in my seminars and has reviewed this book. Great programmer and mathematician and a pretty good karate fighter from what I hear.
 
 Michael Flaxman has reviewed in almost everything Bitcoin-related I've written, including my blog, many of my github libraries and this book. He's also helped me out on my seminars and is just a great person to talk to. He's one of those people who make others sharper and I'm grateful for his significant friendship.
 
-Vortex, Thomas Hunt and Tone Vays brought me into the World Crypto Network back in 2017 that launched my YouTube career. Tone in particular has been an inspiration on working hard and being dedicated to a craft.
+Vortex, Thomas Hunt, and Tone Vays brought me into the World Crypto Network back in 2017 that launched my YouTube career. Tone in particular has been an inspiration on working hard and being dedicated to a craft.
 
-John Newbery was very helpful to me when I first contributed to Bitcoin Core and he's just a really good person, period. He's become such a significant contributor in a relatively short time, which speaks to his talent and dedication. I'm grateful to other Core developers like Marco Falke, Vladimir van der Laan, Alex Morcos, Pieter Wuille, Matt Corallo, Suhas Daftuar and Greg Maxwell who have reviewed some of my code and blog posts.
+John Newbery was very helpful to me when I first contributed to Bitcoin Core and he's just a really good person, period. He's become such a significant contributor in a relatively short time, which speaks to his talent and dedication. I'm grateful to other Core developers like Marco Falke, Wladimir van der Laan, Alex Morcos, Pieter Wuille, Matt Corallo, Suhas Daftuar, and Greg Maxwell, who have reviewed some of my code and blog posts.
 
 David Harding was exceptional in his technical review on this book. He reviewed the text three times, with a lot of great comments. He'd better write a book about Bitcoin at some point, because he has an encyclopedic knowledge of nearly everything that's happend in Bitcoin's history.
 
-Jim Calvin helped me get in contact with people at O'Reilly and Mike Lukadis was the intake editor who green-lighted the project. Andreas Antonopolous gave me some great pointers and recommended me to people at O'Reilly. Michele Cronin kept me on track during my year-long writing spree. Kristen Brown was the production editor who did a lot to get this book out on time. James Fraleigh did copy-editing. I'm a big fan of this publisher and Tim O'Reilly has done a great service to the tech community by making such great books available.
+Jim Calvin helped me get in contact with people at O'Reilly, and Mike Loukides was the intake editor who green-lighted the project. Andreas Antonopolous gave me some great pointers and recommended me to people at O'Reilly. Michele Cronin kept me on track during my year-long writing spree. Kristen Brown was the production editor who did a lot to get this book out on time. James Fraleigh did copy-editing. I'm a big fan of this publisher and Tim O'Reilly has done a great service to the tech community by making such great books available.
 
-The crew of Bitcoiners in Austin have helped keep me on track. They include Bryan Bishop, Will Cole, Napoleon Cole, Tipton Cole, Tuur Demeester, Johnny Dilley, Michael Flaxman, Parker Lewis, Justin Moon, Alan Piscitello and Andrew Poelstra. There's also a slack channel (TAAS) where Saifedean Ammous announced that he was writing a book whose success inspired me. 
+The crew of Bitcoiners in Austin have helped keep me on track. They include Bryan Bishop, Will Cole, Napoleon Cole, Tipton Cole, Tuur Demeester, Johnny Dilley, Michael Flaxman, Parker Lewis, Justin Moon, Alan Piscitello, and Andrew Poelstra. There's also a Slack channel (TAAS) where Saifedean Ammous announced that he was writing a book whose success inspired me. 
 
-Alumni of my course, Programming Blockchain in addition to Bitcoiners on GitHub also did tech reviews of my book. Jeff Flowers, Brian Liotti, Casey Bowman, Johnson Lau, Jason Les, Thomas Braunberger, Eduardo Cobain and Spencer Hanson are among the people who found issues.
+Alumni of my course, Programming Blockchain, in addition to Bitcoiners on GitHub also did tech reviews of my book. Jeff Flowers, Brian Liotti, Casey Bowman, Johnson Lau, Albert Chen, Jason Les, Thomas Braunberger, Eduardo Cobain, and Spencer Hanson are among the people who found issues.
 
-My subscribers on YouTube, my followers on Twitter and my readers on Medium have been instrumental in helping me find my voice and set me on my path as an entrepreneur.
+My subscribers on YouTube, my followers on Twitter, and my readers on Medium have been instrumental in helping me find my voice and set me on my path as an entrepreneur.
 
-Lastly, my wife, Julie and my kids supported me throughout the past couple of years. If not for them, I doubt I'd have had the motivation to work as I have.
+Lastly, my wife, Julie, and my kids supported me throughout the past couple of years. If not for them, I doubt I'd have had the motivation to work as I have.((("", startref="ack00")))
 

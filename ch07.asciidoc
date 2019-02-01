@@ -10,7 +10,7 @@ Toward the end of this chapter, we'll be creating a testnet transaction and broa
 
 === Validating Transactions
 
-Every node, when receiving transactions, makes sure that each transaction adheres to the network rules.
+Every((("Transactions", "validating", id="Tvalid07"))) node, when receiving transactions, makes sure that each transaction adheres to the network rules.
 This process is called _transaction validation_.
 Here are the main things that a node checks:
 
@@ -30,7 +30,7 @@ Let's look at how each is checked.
 
 === Checking the Spentness of Inputs
 
-To prevent double-spending, a node checks that each input exists and has not been spent.
+To((("inputs")))((("double-spending, preventing"))) prevent double-spending, a node checks that each input exists and has not been spent.
 This can be checked by any full node by looking at the UTXO set (see <<chapter_tx_parsing>>).
 We cannot determine from the transaction itself whether it's double-spending, much like we cannot look at a personal check and determine whether it's overdrafting.
 The only way to know is to have access to the UTXO set, which requires calculation from the entire set of transactions.
@@ -44,7 +44,7 @@ A full node can check the spentness of an input pretty easily, but a light clien
 
 === Checking the Sum of the Inputs versus the Sum of the Outputs
 
-Nodes also make sure that the sum of the inputs is greater than or equal to the sum of the outputs.
+Nodes((("outputs"))) also make sure that the sum of the inputs is greater than or equal to the sum of the outputs.
 This ensures that the transaction does not create new coins.
 The one exception is a Coinbase Transaction, which we'll study more in <<chapter_blocks>>.
 Since inputs don't have an amount field, this must be looked up on the blockchain.
@@ -75,7 +75,7 @@ If the fee is negative, we know that the `output_sum` is greater than the `input
 [NOTE]
 .The Value Overflow Incident
 ====
-Back in 2010, there was a transaction that created 184 billion new Bitcoins.
+Back((("value overflow incident"))) in 2010, there was a transaction that created 184 billion new Bitcoins.
 This is due to the fact that in C++, the amount field is a _signed_ integer and not an _unsigned_ integer.
 That is, the value could be negative!
 
@@ -89,7 +89,7 @@ The transaction and the extra Bitcoins it created was invalidated retroactively 
 
 === Checking the Signature
 
-Perhaps the trickiest part of validating a transaction is the process of checking its signatures.
+Perhaps((("signing and verification", "signature verification", id="SAVsigver07"))) the trickiest part of validating a transaction is the process of checking its signatures.
 A transaction typically has at least one signature per input.
 If there are multisig outputs being spent, there may be more than one.
 As we learned in <<chapter_elliptic_curve_cryptography>>, the ECDSA signature algorithm requires the public key `P`, the signature hash `z`, and the signature `(r,s)`.
@@ -100,7 +100,7 @@ Once these are known, the process of verifying the signature is pretty simple as
 include::code-ch07/examples.py[tag=example2]
 ----
 
-SEC public keys and DER signatures are in the stack when an command like `OP_CHECKSIG` is executed, to make getting the public key `P` and signature `(r,s)` pretty straightforward (see <<chapter_script>>).
+SEC((("OP_CHECKSIG operation"))) public keys and DER signatures are in the stack when a command like `OP_CHECKSIG` is executed, to make getting the public key `P` and signature `(r,s)` pretty straightforward (see <<chapter_script>>).
 The hard part is getting the signature hash, `z`.
 A naive way to get the signature hash would be to hash the transaction serialization as shown in <<a_signature_is_in_the_yellow_highlighted_part_or_the_scriptsig>>.
 Unfortunately, we can't do that, since the signature is part of the ScriptSig and a signature can't sign itself.
@@ -141,11 +141,11 @@ image::images/prbc_0704.png[Validation Step 2]
 
 ==== Step 3: Append the Hash Type
 
-Last, we add a 4-byte hash type to the end.
+Last, we add a 4-byte((("SIGHASH_ALL"))) hash type to the end.
 This is to specify what the signature is authorizing.
 The signature can authorize that this input has to go with all the other inputs and outputs (`SIGHASH_ALL`), go with a specific output (`SIGHASH_SINGLE`), or go with any output whatsoever (`SIGHASH_NONE`).
 The latter two have some theoretical use cases, but in practice, almost every transaction is signed with `SIGHASH_ALL`.
-There's also a rarely used hash type called `SIGHASH_ANYONECANPAY` that can be combined with any of the previous three, which we won't get into here.
+There's((("SIGHASH_ANYONECANPAY"))) also a rarely used hash type called `SIGHASH_ANYONECANPAY` that can be combined with any of the previous three, which we won't get into here.
 For `SIGHASH_ALL`, the final transaction must have the exact outputs that were signed or the input signature is invalid.
 
 The integer corresponding to `SIGHASH_ALL` is 1 and this has to be encoded in Little-Endian over 4 bytes, which makes the modified transaction look like <<append_the_hash_type_sighash_all_or_the_orange_01000000>>.
@@ -176,17 +176,17 @@ We need the `z`, or signature hash, to pass into the `evaluate`, method and we n
 [NOTE]
 .Quadratic Hashing
 ====
-The signature hashing algorithm is inefficient and wasteful and is called the Quadratic Hashing problem.
+The((("Quadratic Hashing problem")))((("signing and verification", "signature hash")))((("signature hash")))((("hashes", "signature hash"))) signature hashing algorithm is inefficient and wasteful and is called the Quadratic Hashing problem.
 The Quadratic Hashing problem states that calculating the signature hashes, or `z`'s, increases quadratically with the number of inputs in a transaction.
 Specifically, the number of hash256 operations for calculating the `z` will increase on a per-input basis, but in addition, the length of the transaction will increase, slowing down each hash256 operation because the entire signature hash will need to be calculated anew for each input.
 
 This was particularly obvious with the biggest transaction mined to date:
 
-`bb41a757f405890fb0f5856228e23b715702d714d59bf2b1feb70d8b2b4e3e08`
+pass:[<code>bb41a757f405890fb0f5856228e23b715702d714d59bf2b1feb70d8b2&#x200b;b4e3e08</code>]
 
 This transaction had 5,569 inputs and 1 output and took many miners over a minute to validate, as the signature hashes for the transaction were expensive to calculate.
 
-Segwit (<<chapter_segwit>>) fixes this with a different way of calculating the signature hash, which is specified in BIP0143.
+Segwit (<<chapter_segwit>>) fixes this with a different way of calculating the signature hash, which is specified in((("BIP (Bitcoin Improvement Proposals)", "BIP0143"))) BIP0143.((("", startref="Tvalid07")))((("", startref="SAVsigver07")))
 ====
 
 include::code-ch07/answers.py[tag=exercise1,indent=0]
@@ -195,7 +195,7 @@ include::code-ch07/answers.py[tag=exercise2,indent=0]
 
 === Verifying the Entire Transaction
 
-Now that we can verify an input, the task of verifying the entire transaction is straightforward:
+Now((("Transactions", "verifying entire transaction"))) that we can verify an input, the task of verifying the entire transaction is straightforward:
 
 [source,python]
 ----
@@ -210,7 +210,7 @@ Note that a full node would verify more things like checking for double-spends a
 
 === Creating Transactions
 
-The code to verify transactions will help quite a bit with creating transactions.
+The((("Transactions", "creating", id="Tcreate07"))) code to verify transactions will help quite a bit with creating transactions.
 We can create transactions that fit the verification process.
 Transactions we create will require the sum of the inputs to be greater than or equal to the sum of the outputs.
 Similarly, transactions we create will require a ScriptSig that, when combined with the ScriptPubKey, will be valid.
@@ -241,7 +241,7 @@ In this example, we have an output here denoted by transaction ID and output ind
 
 `0d6fe5213c0b3291f208cba8bfb59b7476dffacc4e5cb66f6eb20a080843a299:13`
 
-When we view this output on a testnet block explorer (<<utxo_that_were_spending>>), we can see that our output is worth 0.33 tBTC.
+When we view this output on a testnet((("block explorers"))) block explorer (<<utxo_that_were_spending>>), we can see that our output is worth 0.33 tBTC.
 
 [[utxo_that_were_spending]]
 .UTXO that we're spending
@@ -253,12 +253,12 @@ Though it's generally bad privacy and security practice to reuse addresses, we'l
 .Why Reusing Addresses Is a Bad Idea
 [WARNING]
 ====
-Back in <<chapter_script>>, we went through how p2pk was inferior to p2pkh, in part because it was only protected by ECDSA.
+Back((("addresses, reusing")))((("privacy issues, reusing addresses"))) in <<chapter_script>>, we went through how p2pk was inferior to p2pkh, in part because it was only protected by ECDSA.
 p2pkh, on the other hand, is also protected by sha256 and ripemd160.
 However, because the blockchain is public, once we _spend from_ a ScriptPubKey corresponding to our address, we reveal our public key as part of the ScriptSig.
 Once we've revealed that public key, sha256 and ripemd160 no longer protect us as the attacker knows the public key and doesn't have to guess.
 
-That said, as of this writing, we are still protected by the Discrete Log problem, which is unlikely to be broken any time soon.
+That((("Discrete Log problem"))) said, as of this writing, we are still protected by the Discrete Log problem, which is unlikely to be broken any time soon.
 It's important from a security perspective, however, to understand what we're protected by.
 
 The other reason to not reuse addresses is for privacy.
@@ -275,7 +275,7 @@ In our case, we'll use 0.01 tBTC as our fee.
 .Fee Estimation
 [NOTE]
 ====
-Fee estimation is done on a per-byte basis.
+Fee((("Transactions", "transaction fees"))) estimation is done on a per-byte basis.
 If your transaction is 600 bytes, you'll want to have double the fees as a transaction that's 300 bytes.
 This is because block space is limited and larger transactions take up more space.
 This calculation has changed a bit since Segwit (segregated witness; see <<chapter_segwit>>), but the general principle still applies.
@@ -289,12 +289,12 @@ There are multiple ways to estimate fees, including:
 * Looking at the current mempool and adding a fee that roughly corresponds to enough economic incentivization, and
 * Going with some fixed fee.
 
-Many wallets use different strategies and this is an active area of research.
+Many wallets use different strategies and this is an active area of research.((("", startref="Tcreate07")))
 ====
 
 === Combining to Make a Transaction
 
-We have a plan for a new transaction with one input and two outputs.
+We((("Transactions", "combining to make"))) have a plan for a new transaction with one input and two outputs.
 But first, let's look at some other tools we'll need.
 
 We need a way to take an address and get the 20-byte hash out of it.
@@ -317,7 +317,7 @@ We call this function `p2pkh_script` since we're converting the hash160 to a p2p
 include::code-ch07/script.py[tag=source1]
 ----
 
-Note that `0x76` is `OP_DUP`, `0xa9` is `OP_HASH160`, `h160` is a 20-byte element, `0x88` is `OP_EQUALVERIFY`, and `0xac` is `OP_CHECKSIG`.
+Note((("OP_DUP operation")))((("OP_HASH160 operation")))((("OP_EQUALVERIFY operation")))((("OP_CHECKSIG operation"))) that `0x76` is `OP_DUP`, `0xa9` is `OP_HASH160`, `h160` is a 20-byte element, `0x88` is `OP_EQUALVERIFY`, and `0xac` is `OP_CHECKSIG`.
 This is the p2pkh ScriptPubKey command set from <<chapter_script>>.
 
 Given these tools, we can proceed to transaction creation.
@@ -334,7 +334,7 @@ However, every ScriptSig in this transaction is currently empty. Filling it is w
 
 === Signing a Transaction
 
-Signing the transaction would be tricky, but we know how to get the signature hash, or `z`, from earlier in this chapter.
+Signing((("signing and verification", "signing process", id="SAVsign07")))((("Transactions", "signing", id="Tsign07"))) the transaction would be tricky, but we know how to get the signature hash, or `z`, from earlier in this chapter.
 If we have the private key whose public key hash160s to the 20-byte hash in the ScriptPubKey, we can sign the `z` and produce the DER signature.
 
 [source,python]
@@ -351,7 +351,7 @@ include::code-ch07/answers.py[tag=exercise3,indent=0]
 
 ==== Creating Your Own Transactions on testnet
 
-To create your own transaction, get some coins for yourself.
+To((("testnet"))) create your own transaction, get some coins for yourself.
 To do that you'll need an address.
 If you completed the last exercise in <<chapter_serialization>>, you should have your own testnet address and private key.
 If you don't remember, here's how:
@@ -368,7 +368,7 @@ My website, https://faucet.programmingbitcoin.com/ is updated to point to a test
 Enter your new testnet address into these faucets to get some testnet coins.
 
 After receiving some coins, spend them using this library.
-This is a big accomplishment for a budding Bitcoin developer, so please take some time to complete this exercise.
+This is a big accomplishment for a budding Bitcoin developer, so please take some time to complete this exercise.((("", startref="Tsign07")))((("", startref="SAVsign07")))
 
 include::code-ch07/answers.py[tag=exercise4,indent=0]
 

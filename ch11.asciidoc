@@ -12,7 +12,7 @@ This will be motivated by something called a Proof of Inclusion.
 For a device that doesn't have much disk space, bandwidth, or computing power, it's expensive to store, receive, and validate the entire blockchain.
 As of this writing, the entire Bitcoin blockchain is around 200GB, which is more than many phones can store; it can be very difficult to download efficiently and will certainly tax the CPU.
 If the entire blockchain cannot be put on the phone, what else can we do?
-Is it possible to create a Bitcoin wallet on a phone without having all the data?
+Is it possible to create a((("wallets")))((("Bitcoin wallets")))((("SPV (Simplified Payment Verification)", "motivation for")))((("Simplified Payment Verification (SPV)", "motivation for"))) Bitcoin wallet on a phone without having all the data?
 
 For any wallet, there are two scenarios that we're concerned with:
 
@@ -36,7 +36,7 @@ The rest of this chapter goes into what the Proof of Inclusion is and how to ver
 
 === Merkle Tree
 
-A Merkle Tree is a computer science structure designed for efficient proofs of inclusion.
+A((("Merkle Trees", "constructing"))) Merkle Tree is a computer science structure designed for efficient proofs of inclusion.
 The prerequisites are an ordered list of items and a cryptographic hash function.
 In our case, the ordered list of items are transactions in a block and the hash function, hash256.
 To construct the Merkle Tree, we follow this algorithm:
@@ -55,7 +55,7 @@ Visually, a Merkle Tree looks like <<merkle_tree_chap_eleven>>.
 image::images/prbc_1101.png[Merkle Tree]
 
 The bottom row is what we call the leaves of the tree.
-All other nodes besides the leaves are called _internal nodes_.
+All((("internal nodes"))) other nodes besides the leaves are called _internal nodes_.
 The leaves get combined to produce its _parent level_ (H~AB~ and H~CD~) and when we calculate the parent level of that, we get the Merkle Root.
 
 We'll go through each part of this process below.
@@ -63,13 +63,13 @@ We'll go through each part of this process below.
 [WARNING]
 .Be Careful with Merkle Trees!
 ====
-There was a vulnerability in Bitcoin 0.4-0.6, which is detailed in CVE-2012-2459.
+There((("Denial of Service attack (DoS) attacks"))) was a vulnerability in Bitcoin 0.4-0.6, which is detailed in CVE-2012-2459.
 There was a Denial of Service vector due to the duplication of the last item in Merkle Trees, which caused some nodes to invalidate blocks even if they were valid.
 ====
 
 === Merkle Parent
 
-Given two hashes, we produce another hash that represents both of them.
+Given((("Merkle Trees", "parent hashes")))((("hashes", "parent hashes"))) two hashes, we produce another hash that represents both of them.
 As they are ordered, we will call the two hashes the _left_ hash and the _right_ hash.
 The hash of the left and right hashes is what we call the _parent_ hash.
 To clarify, here's the formula for the parent hash:
@@ -98,7 +98,7 @@ include::code-ch11/answers.py[tag=exercise1,indent=0]
 
 === Merkle Parent Level
 
-Given an ordered list of more than two hashes, we can calculate the parents of each pair, or what we call the _Merkle Parent Level_.
+Given((("Merkle Parent Level"))) an ordered list of more than two hashes, we can calculate the parents of each pair, or what we call the _Merkle Parent Level_.
 If we have an even number of hashes, this is straightforward, as we can simply pair them up in order.
 If we have an odd number of hashes, then we need to do something, as we have a lone hash at the end.
 We can solve this by duplicating the last item.
@@ -124,7 +124,7 @@ include::code-ch11/answers.py[tag=exercise2,indent=0]
 
 === Merkle Root
 
-The process of getting the Merkle Root is to calculate successive Merkle Parent Levels until we get a single hash.
+The((("Merkle Root", id="merroot11"))) process of getting the Merkle Root is to calculate successive Merkle Parent Levels until we get a single hash.
 If, for example, we have items A through G (7 items), we calculate the Merkle Parent Level:
 
 `[H(A||B), H(C||D), H(E||F), H(G||G)]`
@@ -173,13 +173,13 @@ include::code-ch11/block.py[tag=source1]
 <1> We now allow the transaction hashes to be set as part of the initialization of the block.
 The transaction hashes have to be ordered.
 
-As a full node, if we are given all of the transactions, we can calculate the Merkle Root and check that the Merkle Root is what we expect.
+As a full node, if we are given all of the transactions, we can calculate the Merkle Root and check that the Merkle Root is what we expect.((("", startref="merroot11")))
 
 include::code-ch11/answers.py[tag=exercise4,indent=0]
 
 === Using a Merkle Tree
 
-Now that we know how a Merkle Tree is constructed, we can create and verify Proofs of Inclusion.
+Now((("Merkle Trees", "using"))) that we know how a Merkle Tree is constructed, we can create and verify((("Proofs of Inclusion"))) Proofs of Inclusion.
 Light nodes can get proofs that transactions of interest were included in a block without having to know all the transactions of a block (<<merkle_proof>>).
 
 [[merkle_proof]]
@@ -202,7 +202,7 @@ You can see that Figure 11-2's dotted boxes correspond to the hashes that the li
 [NOTE]
 .How Secure Is an SPV Proof?
 ====
-The full node can send a limited amount of information about the block and the light client can recalculate the Merkle Root, which can then be verified against the Merkle Root in the block header.
+The((("SPV (Simplified Payment Verification)", "security of")))((("Simplified Payment Verification (SPV)", "security of"))) full node can send a limited amount of information about the block and the light client can recalculate the Merkle Root, which can then be verified against the Merkle Root in the block header.
 This does not guarantee that the transaction is in the longest blockchain, but it does assure the light client that the full node would have had to spend a lot of hashing power or energy creating a valid proof-of-work.
 As long as the reward for creating such a proof-of-work is greater than the amounts in the transactions, the light client can at least know that the full node has no clear economic incentive to lie.
 
@@ -211,7 +211,7 @@ It only takes a single honest node to invalidate one hundred dishonest ones, sin
 Therefore, isolation of a light client (that is, control of who the light client is connected to) is required to deceive in this way.
 The security of SPV requires that there be lots of honest nodes on the network.
 
-In other words, light client security is based on a robust network of nodes and the economic cost of producing proof-of-work.
+In((("light client security"))) other words, light client security is based on a robust network of nodes and the economic cost of producing proof-of-work.
 For small transactions relative to the block subsidy (currently 12.5 BTC), there's probably little to worry about.
 For large transactions (say, one hundred BTC), the full nodes may have economic incentive to deceive you.
 Transactions that large should generally be validated using a full node.
@@ -219,20 +219,20 @@ Transactions that large should generally be validated using a full node.
 
 === Merkle Block
 
-When a full node sends a Proof of Inclusion, there are two pieces of information that need to be included.
+When((("Blocks", "Merkle Blocks", id="Bmerkel11")))((("Merkle Blocks", "roll in Proof of Inclusion"))) a full node sends a Proof of Inclusion, there are two pieces of information that need to be included.
 First, the light client needs the Merkle Tree structure, and second, the light client needs to know which hash is at which position in the Merkle Tree.
 Once both pieces of information are given, the light client can reconstruct the partial Merkle Tree to reconstruct the Merkle Root and validate the Proof of Inclusion.
 A full node communicates these two pieces of information to a light client using a Merkle Block.
 
-To understand what's in a Merkle Block, we need to understand a bit about how a Merkle Tree or more generally, Binary Trees, can be traversed.
-In a binary tree, nodes can be traversed breadth-first or depth-first.
+To((("Merkle Blocks", "binary trees and")))((("binary trees"))) understand what's in a Merkle Block, we need to understand a bit about how a Merkle Tree or more generally, Binary Trees, can be traversed.
+In((("Merkle Trees", "breadth-first versus depth-first ordering"))) a binary tree, nodes can be traversed breadth-first or depth-first.
 Breadth-first traversal would go level by level like <<bread_first_ordering>>.
 
 [[bread_first_ordering]]
 .Breadth-first ordering
 image::images/prbc_1103.png[Breadth First]
 
-The breadth-first ordering starts at the root and goes from root to leaves, level by level, left to right.
+The((("breadth-first ordering"))) breadth-first ordering starts at the root and goes from root to leaves, level by level, left to right.
 
 Depth-first ordering is a bit different and looks like <<depth_first_ordering>>.
 
@@ -240,7 +240,7 @@ Depth-first ordering is a bit different and looks like <<depth_first_ordering>>.
 .Depth-first ordering
 image::images/prbc_1104.png[Depth First]
 
-The depth-first ordering starts at the root, and traverses the left side at each node before the right side.
+The((("depth-first ordering"))) depth-first ordering starts at the root, and traverses the left side at each node before the right side.
 
 In a Proof of Inclusion (see <<merkle_proof_two>>), the full node sends the green boxes, H~K~ and H~N~, along with the blue boxes H~ABCDEFGH~, H~IJ~, H~L~, H~M~ and H~OP~.
 The location of each hash is reconstructed using depth-first ordering from some flags.
@@ -252,7 +252,7 @@ image::images/prbc_1102.png[Merkle Proof]
 
 ==== Merkle Tree Structure
 
-The first thing a light client does is create the general structure of the Merkle Tree.
+The((("Merkle Blocks", "Merkle Tree structure")))((("Merkle Trees", "structure of"))) first thing a light client does is create the general structure of the Merkle Tree.
 Because Merkle Trees are built from the leaves upward, the only thing a light client needs is the number of leaves that exist to know the structure.
 The tree from <<merkle_proof_two>> has 16 leaves.
 A light client can create the empty Merkle Tree like so:
@@ -275,7 +275,7 @@ include::code-ch11/answers.py[tag=exercise5,indent=0]
 
 ==== Coding a Merkle Tree
 
-We create a `MerkleTree` class:
+We((("Merkle Blocks", "coding Merkle Trees", id="MBcod11")))((("Merkle Trees", "coding", id="MTcode11"))) create a `MerkleTree` class:
 
 [source,python]
 ----
@@ -287,7 +287,7 @@ include::code-ch11/merkleblock.py[tag=source1]
 Now that we have an empty tree, we can go about filling it to calculate the Merkle Root.
 If we had every leaf hash, getting the Merkle Root would look like this:
 
-[source,python]
+[source,pycon]
 ----
 include::code-ch11/examples.py[tag=example6]
 ----
@@ -318,7 +318,7 @@ include::code-ch11/merkleblock.py[tag=source2]
 We have Merkle Tree traversal methods `left`, `right`, and `up`.
 Let's use these methods to populate the tree via depth-first traversal:
 
-[source,python]
+[source,pycon]
 ----
 include::code-ch11/examples.py[tag=example7]
 ----
@@ -335,7 +335,7 @@ This code will only work when the number of leaves is a power of two, as edge ca
 
 We handle the case where the parent is the parent of the rightmost node on a level with an odd number of nodes:
 
-[source,python]
+[source,pycon]
 ----
 include::code-ch11/examples.py[tag=example8]
 ----
@@ -347,11 +347,11 @@ This is true unless this node happens to be the right-most node and the child le
 <5> We have the left node value, but the right child doesn't exist.
 This is the right-most node of this level so we combine the left value twice.
 
-We can now traverse the tree for the number of leaves that aren't powers of two.
+We can now traverse the tree for the number of leaves that aren't powers of two.((("", startref="MTcode11")))((("", startref="MBcod11")))
 
 ==== Merkle Block Command
 
-The full node communicating a Merkle Block sends all the information needed to verify that the interesting transaction is in the Merkle Tree.
+The((("Merkle Blocks", "merkleblock command"))) full node communicating a Merkle Block sends all the information needed to verify that the interesting transaction is in the Merkle Tree.
 The `merkleblock` network command is what communicates this information and looks like <<parsed_merkleblock>>.
 
 [[parsed_merkleblock]]
@@ -379,7 +379,7 @@ include::code-ch11/answers.py[tag=exercise6,indent=0]
 
 ==== Using Flag Bits and Hashes
 
-The flag bits inform where the hashes go using depth-first ordering.
+The((("Merkle Blocks", "flag bits and hashes", id="MBflag11")))((("flag bits", id="flagbit11")))((("hashes", "using in Merkle Blocks", id="Hblock11"))) flag bits inform where the hashes go using depth-first ordering.
 
 The rules for the flag bits are:
 
@@ -473,7 +473,7 @@ We traverse to the right node to get its value.
 <11> We have the left node's value, but the right does not exist.
 In this case, according to Merkle Tree rules, we calculate the Merkle Parent of the left node twice.
 <12> All hashes must be consumed or we got bad data.
-<13> All flag bits must be consumed or we got bad data.
+<13> All flag bits must be consumed or we got bad data.((("", startref="Bmerkel11")))((("", startref="flagbit11")))((("", startref="Hblock11")))((("", startref="MBflag11")))
 
 include::code-ch11/answers.py[tag=exercise7,indent=0]
 

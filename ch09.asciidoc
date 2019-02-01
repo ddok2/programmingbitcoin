@@ -2,9 +2,9 @@
 == Blocks
 
 [.lead]
-Transactions transfer Bitcoins from one party to another and are unlocked, or authorized, by signatures.
+Transactions((("Blocks", "purpose of"))) transfer Bitcoins from one party to another and are unlocked, or authorized, by signatures.
 This ensures that the sender authorized the transaction, but what if the sender sends the same coins to multiple people?
-This is called the _double-spending problem_ and is so called because the owner of a lockbox may try to spend the same output twice.
+This((("double-spending, preventing"))) is called the _double-spending problem_ and is so called because the owner of a lockbox may try to spend the same output twice.
 Much like being given a check that has the possibility of bouncing, the receiver needs to be assured that the transaction is valid.
 
 This is where a major innovation of Bitcoin comes in with Blocks.
@@ -23,9 +23,9 @@ We'll start with a special transaction called the Coinbase Transaction, which is
 
 === Coinbase Transactions
 
-Coinbase Transactions have nothing to do with the US company of the same name.
+Coinbase Transactions((("Blocks", "Coinbase Transactions")))((("Coinbase Transactions"))) have nothing to do with the US company of the same name.
 Coinbase is the required first transaction of every block and is the only transaction allowed to bring Bitcoins into existence.
-The Coinbase Transaction's outputs are kept by whomever the mining entity designates and usually include all the transaction fees of the other transactions in the block as well as something called the _block reward_.
+The((("block rewards"))) Coinbase Transaction's outputs are kept by whomever the mining entity designates and usually include all the transaction fees of the other transactions in the block as well as something called the _block reward_.
 
 The Coinbase Transaction is what makes it worthwhile for a miner to mine.
 <<coinbase_transaction>> shows what a Coinbase Transaction looks like:
@@ -52,7 +52,7 @@ So what's in the ScriptSig?
 The ScriptSig of the Coinbase Transaction is set by whoever mined the transaction.
 The main restriction is that the ScriptSig has to be at least 2 bytes and no longer than 100 bytes.
 Other than those restrictions and BIP0034 (see <<BIP0034>>) the ScriptSig can be anything the miner wants as long as the evaluation of the ScriptSig by itself, with no corresponding ScriptPubKey, is valid.
-Here is the ScriptSig for the Genesis Block's Coinbase Transaction:
+Here is the ScriptSig for the Genesis BloBIP0066ck's Coinbase Transaction:
 
 ```
 4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c
@@ -73,7 +73,7 @@ Other Coinbase Transactions' ScriptSigs contain similarly arbitrary data.
 [[BIP0034]]
 ==== BIP0034
 
-BIP0034 regulates the first element of the ScriptSig of Coinbase Transactions.
+BIP0034((("BIP (Bitcoin Improvement Proposals)", "BIP0034"))) regulates the first element of the ScriptSig of Coinbase Transactions.
 This was due to a network problem where miners were using the _same_ Coinbase Transaction for different blocks.
 
 The Coinbase Transaction being the same byte-wise means that the transaction IDs are also the same, since the hash256 of the transaction is deterministic.
@@ -96,7 +96,7 @@ include::code-ch09/answers.py[tag=exercise2,indent=0]
 
 === Headers versus Full Blocks
 
-Blocks are batches of transactions, and the block header is metadata about the transactions included in the block.
+Blocks((("Blocks", "headers versus full blocks"))) are batches of transactions, and the block header is metadata about the transactions included in the block.
 The block header as shown in <<parsed_block>> consists of:
 
 * Version
@@ -144,15 +144,15 @@ include::code-ch09/answers.py[tag=exercise5,indent=0]
 
 === Version
 
-_Version_ in normal software refers to a particular set of features.
+_Version_ in normal((("Blocks", "versions")))((("version numbers", "of blocks"))) software refers to a particular set of features.
 For a block, this is similar, in the sense that the version field reflects the capabilities of the software that produced the block.
 In the past this was used as a way to indicate a single feature that was ready to be deployed by the block's miner.
 Version 2 meant that the software was ready for BIP0034, the Coinbase Transaction block height feature from earlier in this chapter.
-Version 3 meant that the software was ready for BIP0066, the enforcement of strict DER encoding.
-Version 4 meant that the software was ready for BIP0065, which specified `OP_CHECKLOCKTIMEVERIFY`.
+Version 3 meant that the software was ready for((("BIP (Bitcoin Improvement Proposals)", "BIP0066"))) BIP0066, the enforcement of strict DER encoding.
+Version 4 meant that the software was ready for((("BIP (Bitcoin Improvement Proposals)", "BIP0065"))) BIP0065, which specified((("OP_CHECKLOCKTIMEVERIFY operation"))) `OP_CHECKLOCKTIMEVERIFY`.
 
 Unfortunately, the incremental increase in version number meant that only one feature was signaled on the network at a time.
-To alleviate this, the developers came up with BIP9, which allows up to 29 different features to be signaled at the same time.
+To alleviate this, the developers came up with((("BIP (Bitcoin Improvement Proposals)", "BIP9"))) BIP9, which allows up to 29 different features to be signaled at the same time.
 
 ==== BIP9
 
@@ -164,9 +164,9 @@ The other 29 bits can be assigned to different soft-fork features, which miners 
 For example, bit 0 (the rightmost bit) can be flipped to 1 to signal readiness for one soft fork, bit 1 (the second bit from the right) can be flipped to 1 to signal readiness for another, bit 2 (the third bit from the right) can be flipped to 1 to signal readiness for another, and so on.
 
 BIP9 requires that 95% of blocks signal readiness in a given 2,016 block epoch (the period for a difficulty adjustment; more on that later in this chapter) before the soft fork feature gets activated on the network.
-Soft forks that used BIP9 as of this writing have been BIP68/BIP112/BIP113 (`OP_CHECKSEQUENCEVERIFY` and related changes) and BIP141 (Segwit).
+Soft forks that used BIP9 as of this writing have been((("BIP (Bitcoin Improvement Proposals)", "BIP68")))((("BIP (Bitcoin Improvement Proposals)", "BIP112")))((("BIP (Bitcoin Improvement Proposals)", "BIP113"))) BIP68/BIP112/BIP113 (`OP_CHECKSEQUENCEVERIFY` and related changes) and((("BIP (Bitcoin Improvement Proposals)", "BIP141"))) BIP141 (Segwit).
 These BIPs used bits 0 and 1 for signaling, respectively.
-BIP91 used something like BIP9, but used an 80% threshold and a smaller block period, so wasn't strictly using BIP9.
+BIP91((("BIP (Bitcoin Improvement Proposals)", "BIP91"))) used something like BIP9, but used an 80% threshold and a smaller block period, so wasn't strictly using BIP9.
 Bit 4 was used to signal BIP91.
 
 Checking for these features is relatively straightforward:
@@ -175,7 +175,7 @@ Checking for these features is relatively straightforward:
 ----
 include::code-ch09/examples.py[tag=example4]
 ----
-<1> The `>>` operator is the left bit-shift operator, which throws away the rightmost 29 bits, leaving just the top 3 bits.
+<1> The `>>` operator((("&gt;&gt; (left bit-shift) operator")))((("left bit-shift (&gt;&gt;) operator"))) is the left bit-shift operator, which throws away the rightmost 29 bits, leaving just the top 3 bits.
 The `0b001` is a way of writing a number in binary in Python.
 <2> The `&` operator is the "bitwise and" operator.
 In our case, we right-shift by 4 bits first and then check that the rightmost bit is 1.
@@ -189,22 +189,22 @@ include::code-ch09/answers.py[tag=exercise8,indent=0]
 
 === Previous Block
 
-All blocks have to point to a previous block.
+All((("Blocks", "blockchain data structure")))((("blockchain data structure")))((("Genesis Block"))) blocks have to point to a previous block.
 This is why the data structure is called a _blockchain_.
 Blocks link back all the way to the very first block, or the Genesis Block.
 The previous block field ends in a bunch of `00` bytes, which we will discuss more later in this chapter.
 
 === Merkle Root
 
-The Merkle Root encodes all the ordered transactions in a 32-byte hash.
+The((("Merkle Root")))((("Blocks", "Merkle Root"))) Merkle Root encodes all the ordered transactions in a 32-byte hash.
 We will discuss how this is important for SPV (simplified payment verification) clients and how they can use the Merkle Root along with data from the server to get a proof-of-inclusion in <<chapter_spv>>.
 
 === Timestamp
 
-The timestamp is a UNIX-style timestamp taking up 4 bytes.
+The((("Blocks", "timestamps")))((("timestamps")))((("UNIX-style timestamps"))) timestamp is a UNIX-style timestamp taking up 4 bytes.
 Unix timestamps are the number of seconds since January 1, 1970.
 This timestamp is used in two places: the first for validating timestamp-based Locktimes on transactions included in the block and the second for calculating a new bits/target/difficulty every 2,016 blocks.
-The Locktimes were at one point used directly for transactions within a block, but BIP113 changed the behavior to not use the current block's Locktime directly, but the median-time-past (MTP) of the past 11 blocks.
+The((("BIP (Bitcoin Improvement Proposals)", "BIP113"))) Locktimes were at one point used directly for transactions within a block, but BIP113 changed the behavior to not use the current block's Locktime directly, but((("median-time-past (MTP)"))) the median-time-past (MTP) of the past 11 blocks.
 
 [NOTE]
 .Will Bitcoin Overflow on the Timestamp?
@@ -220,22 +220,22 @@ In 2106, the block header will need some sort of fork as the timestamp in the bl
 
 === Bits
 
-Bits is a field that encodes the proof-of-work necessary in this block.
+Bits((("Blocks", "Bits field"))) is a field that encodes the proof-of-work necessary in this block.
 This will be discussed more in the next section.
 
 === Nonce
 
-Nonce stands for "number used only once" or n-once.
+Nonce((("Blocks", "nonce field")))((("nonce field"))) stands for "number used only once" or n-once.
 This number is what is changed by miners when looking for proof-of-work.
 
 === Proof-of-Work
 
-Proof-of-work is what secures Bitcoin and, at a deep level, allows the decentralized mining of Bitcoin.
+Proof-of-work is((("Blocks", "looking for proof-of-work")))((("proof-of-work", "function of"))) what secures Bitcoin and, at a deep level, allows the decentralized mining of Bitcoin.
 Finding a proof-of-work gives a miner the right to put the attached block into the blockchain.
 As proof-of-work is very rare, this is not an easy task.
 But because proof-of-work is objective and easy to verify, anyone can be a miner if they so choose.
 
-Proof-of-work is called "mining" for a very good reason.
+Proof-of-work((("mining"))) is called "mining" for a very good reason.
 Like physical mining, there is something that miners are searching for.
 A typical gold-mining operation processes 45 tons of dirt and rock before accumulating 1 oz of gold.
 This is because gold is very rare.
@@ -274,14 +274,14 @@ Getting back to the analogy, the process of finding proof-of-work requires us to
 
 ==== How a Miner Generates New Hashes
 
-Where does the miner get new numerical dirt to process to see if it satisfies proof-of-work?
+Where((("proof-of-work", "generating new hashes")))((("hashes", "generating new"))) does the miner get new numerical dirt to process to see if it satisfies proof-of-work?
 This is where the nonce field comes in.
 The miners can change the nonce field at will.
 
 Unfortunately, the 4 bytes or 32-bits, or 2^32^ possible nonces that a miner can try, is insufficient space.
 This is because the required proof-of-work is much more difficult than can be done in 32 bits.
 Modern ASIC equipment can calculate way more than 2^32^ different hashes per second.
-The AntMiner S9, for example, calculates 12 terahashes per second (Th/s).
+The((("AntMiner S9"))) AntMiner S9, for example, calculates 12 terahashes per second (Th/s).
 That is approximately 2^43^ hashes per second, which means that the entire nonce space can be consumed in just 0.0003 seconds.
 
 What miners can do when the nonce field is exhausted is change the Coinbase Transaction, which then changes the Merkle Root, giving miners a fresh nonce space each time.
@@ -290,7 +290,7 @@ The mechanics of how the Merkle Root changes whenever any transaction in the blo
 
 ==== Target
 
-Proof-of-work is the requirement that the hash of every block header in Bitcoin must be below a certain target.
+Proof-of-work((("proof-of-work", "targets")))((("targets"))) is the requirement that the hash of every block header in Bitcoin must be below a certain target.
 _Target_ is a 256-bit number that is computed directly from the bits field.
 The target is very small compared to an average 256-bit number.
 
@@ -343,7 +343,7 @@ include::code-ch09/answers.py[tag=exercise9,indent=0]
 
 ==== Difficulty
 
-Target is hard to comprehend for human beings.
+Target((("proof-of-work", "difficulty"))) is hard to comprehend for human beings.
 Target is the number that the hash must be below, but as humans, it's hard to easily see the difference between a 180-bit number and a 190-bit number.
 The first is a thousand times smaller, but from looking at targets, such large numbers are not easy to contextualize.
 
@@ -379,7 +379,7 @@ include::code-ch09/answers.py[tag=exercise10,indent=0]
 
 ==== Checking That the Proof-of-Work Is Sufficient
 
-We already learned that proof-of-work can be calculated by computing the hash256 of the block header and interpreting this as a Little-Endian integer.
+We((("proof-of-work", "validity"))) already learned that proof-of-work can be calculated by computing the hash256 of the block header and interpreting this as a Little-Endian integer.
 If this number is lower than the target, we have a valid proof-of-work.
 If not, the block is not valid as it doesn't have proof-of-work.
 
@@ -387,7 +387,7 @@ include::code-ch09/answers.py[tag=exercise11,indent=0]
 
 === Difficulty Adjustment
 
-In Bitcoin, each group of 2,016 blocks is called a _difficulty adjustment period_.
+In((("Blocks", "difficulty adjustment period")))((("difficulty adjustment period")))((("proof-of-work", "difficulty adjustment period"))) Bitcoin, each group of 2,016 blocks is called a _difficulty adjustment period_.
 At the end of every difficulty adjustment period, the target is adjusted according to this formula:
 
 `time_differential = (block timestamp of last block in difficulty adjustment period) -
@@ -395,7 +395,7 @@ At the end of every difficulty adjustment period, the target is adjusted accordi
 
 `new_target = previous_target * time_differential / (2 weeks)`
 
-The `time_differential` number is calculated so that if it's greater than 8 weeks, 8 weeks is used, and if it's less than 3.5 days, 3.5 days is used.
+The((("time_differential number"))) `time_differential` number is calculated so that if it's greater than 8 weeks, 8 weeks is used, and if it's less than 3.5 days, 3.5 days is used.
 This way, the new target cannot change more than four times in either direction.
 That is, the target will be reduced or increased by four times at the most.
 
